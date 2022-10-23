@@ -36,10 +36,14 @@ router.post("/login",
     }
   });
 
-router.get("/", (req, res) => {
-  Student.find((err, student) => {
-    res.send(student);
-  })
+router.get("/", checktoken, async(req, res) => {
+  try{
+    const students = await Student.find().select("-password");
+    res.send(students);
+  }
+  catch(err){
+    res.status(500).send("Some error occured while getting students data");
+  }
 })
 
 router.post("/", (req, res) => {
